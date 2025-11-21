@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BloodMatch - Dashboard</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <!-- Font Awesome for premium icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    :root {
+      --red: #b91c1c;
+      --blue: #1e40af;
+      --yellow: #f59e0b;
+      --green: #22c55e;
+      --light: #fef2f2;
+      --dark: #0f172a;
+      --gold: #fbbf24;
+      --premium-glow: #fef3c7;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--light);
+      color: var(--dark);
+    }
+
+    .navbar {
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
+      padding: .8rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      color: var(--red);
+      font-size: 1.5rem;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      color: var(--dark) !important;
+      font-weight: 500;
+      font-size: .9rem;
+      padding: .5rem 1rem;
+      border-radius: 50px;
+      transition: all .3s;
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+    }
+
+    .nav-btn:hover {
+      background: var(--light);
+      color: var(--red) !important;
+    }
+
+    .nav-btn.active {
+      background: var(--red);
+      color: #fff !important;
+      font-weight: 600;
+    }
+
+    /* Premium Button */
+    .buy-premium-highlight {
+      background: linear-gradient(145deg, var(--red), var(--blue));
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      padding: .5rem 1.2rem;
+      font-weight: 700;
+      font-size: .85rem;
+      transition: transform .3s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .buy-premium-highlight:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(185, 28, 28, .4);
+    }
+
+    .buy-premium-highlight:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-logout {
+      border: 1.5px solid var(--red);
+      color: var(--red);
+      border-radius: 50px;
+      padding: .3rem 1rem;
+      font-weight: 700;
+      font-size: .9rem;
+      transition: all .3s;
+    }
+
+    .btn-logout:hover {
+      background: var(--red);
+      color: #fff;
+    }
+
+    .stats-card {
+      color: #fff;
+      border-radius: 15px;
+      padding: 1rem;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      transition: transform .2s;
+    }
+
+    .stats-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .stats-role {
+      background: var(--red);
+    }
+
+    .stats-blood {
+      background: var(--blue);
+    }
+
+    .stats-appointment {
+      background: var(--yellow);
+      color: var(--dark);
+    }
+
+    .stats-total {
+      background: var(--green);
+    }
+
+    /* PREMIUM GLOW */
+    .premium-glow {
+      position: relative;
+      border: 2px solid var(--gold);
+      border-radius: 15px;
+      background: linear-gradient(135deg, var(--premium-glow), #fff8e1);
+      box-shadow: 0 0 15px rgba(251, 191, 36, 0.3), 0 4px 12px rgba(0, 0, 0, 0.1);
+      animation: premiumPulse 3s infinite;
+    }
+
+    @keyframes premiumPulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 15px rgba(251, 191, 36, 0.3), 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      50% {
+        box-shadow: 0 0 25px rgba(251, 191, 36, 0.6), 0 6px 16px rgba(0, 0, 0, 0.15);
+      }
+    }
+
+    .premium-badge {
+      background: linear-gradient(135deg, var(--gold), #f59e0b);
+      color: #1f2937;
+      font-weight: 700;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 50px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    /* Distance Slider */
+    .distance-control {
+      background: #f8f9fa;
+      border-radius: 16px;
+      padding: 1.2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .08);
+      margin-bottom: 1.5rem;
+    }
+
+    .slider-container {
+      position: relative;
+      height: 40px;
+      margin: 1rem 0;
+    }
+
+    .range-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: #ddd;
+      outline: none;
+    }
+
+    .range-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--red);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, .2);
+      transition: all .2s;
+    }
+
+    .range-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 10px rgba(185, 28, 28, .4);
+    }
+
+    .range-value {
+      position: absolute;
+      top: -35px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--red);
+      color: #fff;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: .9rem;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .2s;
+    }
+
+    .range-value.show {
+      opacity: 1;
+    }
+
+    #map {
+      height: 380px;
+      border-radius: 16px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, .1);
+      margin-bottom: 1.5rem;
+    }
+
+    .card {
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, .1);
+    }
+
+    .card-header {
+      background: var(--red);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .table thead {
+      background: var(--red);
+      color: #fff;
+    }
+
+    .spinner {
+      display: none;
+      width: 36px;
+      height: 36px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--red);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 1rem auto;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width:767px) {
+
+      .nav-btn,
+      .btn-logout,
+      .buy-premium-highlight {
+        font-size: .8rem;
+        padding: .4rem .8rem;
+      }
+
+      #map {
+        height: 280px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="/">BloodMatch</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="ms-auto d-flex align-items-center gap-2 flex-wrap">
+          <button class="nav-btn active" onclick="goTo('/')">Home</button>
+          <button class="nav-btn" onclick="goTo('/matches')">Matches</button>
+          <button class="nav-btn" id="notificationBtn">
+            Notifications <span class="badge bg-danger" id="notificationBadge" style="display:none;">0</span>
+          </button>
+          <button class="nav-btn" id="profileBtn">Profile</button>
+          <button class="buy-premium-highlight" id="buyPremiumBtn">Buy Premium</button>
+          <button class="btn-logout" id="logoutBtn">Logout</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container my-4">
+    <h2 class="mb-4 d-flex align-items-center gap-2">
+      Welcome, <span id="userName">Loading...</span>!
+      <span id="premiumTag" class="premium-badge" style="display:none;">
+        <i class="fas fa-crown"></i> Premium
+      </span>
+    </h2>
+
+    <!-- Stats -->
+    <div class="row g-3 mb-4" id="statsRow">
+      <div class="col-6 col-md-3">
+        <div class="stats-card stats-role">Role<br><span id="userRole">-</span></div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stats-card stats-blood">Blood<br><span id="userBlood">-</span></div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stats-card stats-appointment" id="btnFindMatches">Find<br><span id="matchCount">0</span></div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stats-card stats-total" id="btnViewNotifications">Notify<br><span id="notifCount">0</span></div>
+      </div>
+    </div>
+
+    <!-- Distance Slider -->
+    <div class="distance-control">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <label class="form-label fw-bold text-dark">Search Radius</label>
+        <span id="distanceValue" class="fw-bold text-primary">50 km</span>
+      </div>
+      <div class="slider-container">
+        <input type="range" class="range-slider" id="distanceSlider" min="1" max="100" value="50">
+        <div id="rangeValue" class="range-value">50 km</div>
+      </div>
+      <button class="btn btn-danger w-100 mt-3" id="searchBtn">Find <span id="searchKm">50</span> km</button>
+    </div>
+
+    <!-- Map -->
+    <div id="map"></div>
+    <div class="spinner" id="mapSpinner"></div>
+
+    <!-- Matches Table -->
+    <div class="card">
+      <div class="card-header" id="matchesHeader">Nearby Donors</div>
+      <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>City</th>
+              <th>Blood</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="matchesTableBody">
+            <tr>
+              <td colspan="5" class="text-center py-4">Click "Find" to search.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    // function goTo(p) { window.location.href = '/profile'; }
+
+    document.getElementById("profileBtn").onclick = () => { window.location.href = '/profile'; };
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      const token = localStorage.getItem("token");
+      if (!token) { alert("Login required."); window.location.href = "/login"; return; }
+
+      let map, userMarker, matchMarkers = [], radiusCircle;
+      let isPremiumUser = false, currentUserRole = "", searchedFor = "";
+
+      const userIcon = L.icon({ iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png", shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png", iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41] });
+      const matchIcon = L.icon({ iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png", shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png", iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41] });
+
+      function initMap(lat, lng) {
+        map = L.map("map").setView([lat, lng], 10);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18, attribution: "© OpenStreetMap" }).addTo(map);
+        userMarker = L.marker([lat, lng], { icon: userIcon }).addTo(map).bindPopup("<b>You</b>").openPopup();
+      }
+
+      // ==============================
+      // PREMIUM PURCHASE
+      // ==============================
+      const buyBtn = document.getElementById("buyPremiumBtn");
+      buyBtn.addEventListener("click", async () => {
+        buyBtn.disabled = true;
+        buyBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Processing...`;
+
+        try {
+          const res = await axios.get("http://localhost:3000/purchase/premiumMembership", {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+
+          if (res.data.isPremiumUser) {
+            alert(res.data.message || "You are already a premium member!");
+            buyBtn.innerHTML = "Premium Member";
+            buyBtn.disabled = true;
+            return;
+          }
+
+          const { paymentSessionId, orderId } = res.data;
+          const cashfree = Cashfree({ mode: "sandbox" });
+          const result = await cashfree.checkout({ paymentSessionId, redirectTarget: "_modal" });
+
+          if (result.paymentDetails) {
+            await axios.post(`http://localhost:3000/purchase/updateTransactionStatus/${orderId}`, {}, { headers: { Authorization: `Bearer ${token}` } });
+            alert("Payment successful! Welcome to Premium!");
+            window.location.reload();
+          } else {
+            alert("Payment was cancelled.");
+          }
+        } catch (err) {
+          alert(err.response?.data?.message || "Payment failed.");
+        } finally {
+          buyBtn.disabled = false;
+          buyBtn.innerHTML = "Buy Premium";
+        }
+      });
+
+      // ==============================
+      // LOAD USER
+      // ==============================
+      async function loadUser() {
+        try {
+          const r = await axios.get("http://localhost:3000/profile/data", { headers: { Authorization: `Bearer ${token}` } });
+          const u = r.data;
+          document.getElementById("userName").textContent = u.name || "User";
+          document.getElementById("userRole").textContent = u.role || "-";
+          document.getElementById("userBlood").textContent = u.bloodGroup || "-";
+          isPremiumUser = (u.isPremiumUser === true);
+          currentUserRole = u.role?.toLowerCase();
+
+          const [lng, lat] = u.location?.coordinates || [0, 0];
+          initMap(lat, lng);
+
+          // PREMIUM UI
+          const premiumTag = document.getElementById("premiumTag");
+          const statsRow = document.getElementById("statsRow");
+          const badge = document.getElementById("notificationBadge");
+          const countEl = document.getElementById("notifCount");
+
+          // if (isPremiumUser) {
+          //   premiumTag.style.display = "inline-flex";
+          //   statsRow.classList.add("premium-glow");
+          //   badge.textContent = "0";
+          //   countEl.textContent = "0";
+          // } else {
+          //   premiumTag.style.display = "none";
+          //   statsRow.classList.remove("premium-glow");
+          //   badge.textContent = "Premium"; badge.className = "badge bg-warning text-dark"; badge.style.display = "inline-block";
+          //   countEl.textContent = "Premium";
+          // }
+          const buyBtn = document.getElementById("buyPremiumBtn");
+
+          if (isPremiumUser) {
+            // Premium UI
+            premiumTag.style.display = "inline-flex";
+            statsRow.classList.add("premium-glow");
+            badge.textContent = "0";
+            countEl.textContent = "0";
+
+            // Disable buy button
+            // buyBtn.disabled = true;
+            buyBtn.innerHTML = `<i class="fas fa-crown me-1"></i> Premium Member`;
+            buyBtn.style.background = "linear-gradient(145deg, var(--gold), #f59e0b)";
+            buyBtn.style.color = "#1f2937";
+          } else {
+            // Non-premium UI
+            premiumTag.style.display = "none";
+            statsRow.classList.remove("premium-glow");
+            badge.textContent = "Premium";
+            badge.className = "badge bg-warning text-dark";
+            badge.style.display = "inline-block";
+            countEl.textContent = "Premium";
+
+            // Enable buy button
+            buyBtn.disabled = false;
+            buyBtn.innerHTML = "Buy Premium";
+            buyBtn.style.background = "linear-gradient(145deg, var(--red), var(--blue))";
+            buyBtn.style.color = "#fff";
+          }
+
+        } catch (e) {
+          if (e.response?.status === 401) { localStorage.removeItem("token"); window.location.href = "/login"; }
+          else alert("Failed to load profile.");
+        }
+      }
+
+      // ==============================
+      // LOAD MATCHES
+      // ==============================
+      async function loadMatches(distanceKm) {
+        const spinner = document.getElementById("mapSpinner"); spinner.style.display = "block";
+        const blood = document.getElementById("userBlood").textContent;
+        const { lng, lat } = userMarker.getLatLng();
+
+        try {
+          const res = await axios.post("http://localhost:3000/geocode/match", {
+            bloodGroup: blood,
+            maxDistance: distanceKm * 1000,
+            longitude: lng,
+            latitude: lat
+          }, { headers: { Authorization: `Bearer ${token}` } });
+
+          const data = res.data;
+          const matches = Array.isArray(data.matches) ? data.matches : [];
+          searchedFor = data.searchedFor?.toLowerCase() || "donor";
+
+          document.getElementById("matchesHeader").textContent = `Nearby ${searchedFor === 'donor' ? 'Donors' : 'Recipients'}`;
+
+          matchMarkers.forEach(m => map.removeLayer(m)); matchMarkers = [];
+          if (radiusCircle) map.removeLayer(radiusCircle);
+          radiusCircle = L.circle([lat, lng], { radius: distanceKm * 1000, color: "#b91c1c", fillOpacity: 0.1 }).addTo(map);
+
+          document.getElementById("matchCount").textContent = matches.length;
+          const tbody = document.getElementById("matchesTableBody"); tbody.innerHTML = "";
+
+          if (matches.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" class="text-center py-3">No ${searchedFor}s found within ${distanceKm} km.</td></tr>`;
+          } else {
+            matches.forEach(m => {
+              const tr = document.createElement("tr");
+              tr.innerHTML = `
+                <td>${m.name || "Unknown"}</td>
+                <td>${m.city || "-"}</td>
+                <td>${m.bloodGroup}</td>
+                <td><span class="badge ${m.status === 'Urgent' ? 'bg-danger' : 'bg-success'}">${m.status || "Available"}</span></td>
+                <td><button class="btn btn-outline-danger btn-sm" onclick="showPhone('${m.phonenumber}')">Contact</button></td>
+              `;
+              tbody.appendChild(tr);
+
+              const [mlng, mlat] = m.location?.coordinates || [0, 0];
+              const marker = L.marker([mlat, mlng], { icon: matchIcon }).addTo(map);
+              marker.bindPopup(`
+                <b>${m.name}</b><br>
+                ${m.city}<br>
+                Blood: ${m.bloodGroup}<br>
+                <button class="btn btn-sm btn-danger mt-2" onclick="showPhone('${m.phonenumber}')">
+                  Call ${m.phonenumber}
+                </button>
+              `);
+              matchMarkers.push(marker);
+            });
+          }
+        } catch (e) {
+          alert(e.response?.data?.error || "Search failed.");
+        } finally {
+          spinner.style.display = "none";
+        }
+      }
+
+      window.showPhone = (phone) => alert(`Contact: ${phone}`);
+
+      // ==============================
+      // NOTIFICATIONS
+      // ==============================
+      async function loadNotifications() {
+        if (!isPremiumUser) { alert("Upgrade to Premium to view notifications."); return; }
+        try {
+          // const r = await axios.get("http://localhost:3000/reminders/getNotificationPage", { headers: { Authorization: `Bearer ${token}` } });
+          // const count = Array.isArray(r.data) ? r.data.length : 0;
+          // const badge = document.getElementById("notificationBadge");
+          // badge.textContent = count; badge.className = count > 0 ? "badge bg-danger" : "badge bg-success";
+          // badge.style.display = "inline-block";
+          // document.getElementById("notifCount").textContent = count;
+
+
+          // const response = await axios.get("http://localhost:3000/reminders/getNotificationPage", {
+          //   headers: { Authorization: `Bearer ${token}` },
+          //   responseType: 'text'
+          // });
+
+          // document.open();
+          // document.write(response.data);
+          // document.close();
+
+          window.location.href = "http://localhost:3000/reminders/getNotificationPage";
+        } catch (e) {
+          console.log("error is", e);
+          alert("Failed to load notifications.");
+        }
+      }
+
+      // ==============================
+      // SLIDER
+      // ==============================
+      const slider = document.getElementById("distanceSlider");
+      const valueDisplay = document.getElementById("distanceValue");
+      const rangeValue = document.getElementById("rangeValue");
+      const searchBtn = document.getElementById("searchBtn");
+      const searchKm = document.getElementById("searchKm");
+
+      slider.addEventListener("input", () => {
+        const v = slider.value;
+        valueDisplay.textContent = `${v} km`;
+        rangeValue.textContent = `${v} km`;
+        searchKm.textContent = v;
+        rangeValue.style.left = `${(v / 100) * 100}%`;
+        rangeValue.classList.add("show");
+        setTimeout(() => rangeValue.classList.remove("show"), 800);
+      });
+
+      searchBtn.addEventListener("click", () => loadMatches(parseInt(slider.value)));
+
+      // ==============================
+      // EVENTS
+      // ==============================
+      document.getElementById("notificationBtn").onclick = loadNotifications;
+      document.getElementById("btnViewNotifications").onclick = loadNotifications;
+      document.getElementById("btnFindMatches").onclick = () => loadMatches(parseInt(slider.value));
+      document.getElementById("logoutBtn").onclick = () => { localStorage.removeItem("token"); window.location.href = "/login"; };
+
+      // ==============================
+      // START
+      // ==============================
+      loadUser();
+    });
+  </script>
+</body>
+
+</html>

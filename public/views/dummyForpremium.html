@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy Premium - BloodMatch</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(145deg, #b91c1c 0%, #1e40af 100%);
+        }
+        #buyPremiumBtn {
+            padding: 15px 40px;
+            font-size: 18px;
+            background-color: #f59e0b;
+            color: #1f2937;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+        #buyPremiumBtn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+</head>
+<body>
+    <button id="buyPremiumBtn">Buy Premium - ₹100</button>
+
+    <script>
+        document.getElementById('buyPremiumBtn').addEventListener("click", buyPremium);
+
+        async function buyPremium() {
+            // Get token from localStorage (better than hardcoding)
+            const token = localStorage.getItem('token');
+            
+            if (!token) {
+                alert('Please login first');
+                window.location.href = '/login';
+                return;
+            }
+
+            try {
+                // Request payment session
+                const res = await axios.get("http://localhost:3000/purchase/premiumMembership", {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+                // Check if already premium
+                if (res.data.isPremium) {
+                    alert(res.data.message);
+                    return;
+                }
+
+                const { paymentSessionId, orderId } = res.data;
+                console.log('Payment Session ID:', paymentSessionId);
+
+                // Initialize Cashfree checkout
+                const cashfree = Cashfree({ mode: "sandbox" });
+                
+                const result = await cashfree.checkout({
+                    paymentSessionId,
+                    redirectTarget: "_modal",
+                });
+
+                console.log('Payment Result:', result);
+
+                // Update transaction status if payment successful
+                if (result.paymentDetails) {
+                    const updateRes = await axios.post(
+                        `http://localhost:3000/purchase/updateTransactionStatus/${orderId}`,
+                        {},
+                        { headers: { Authorization: `Bearer ${token}` } }
+                    );
+
+                    if (updateRes.data.success) {
+                        alert("Payment successful! You are now a premium member.");
+                        window.location.reload();
+                    }
+                } else {
+                    alert("Payment was not completed.");
+                }
+            } catch (err) {
+                console.error('Payment Error:', err);
+                alert("Payment failed or was cancelled: " + (err.response?.data?.message || err.message));
+            }
+        }
+    </script>
+</body>
+</html>
