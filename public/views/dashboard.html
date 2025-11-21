@@ -311,7 +311,7 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <div class="ms-auto d-flex align-items-center gap-2 flex-wrap">
           <button class="nav-btn active" onclick="goTo('/')">Home</button>
-          <button class="nav-btn" onclick="goTo('/matches')">Matches</button>
+          <button class="nav-btn" onclick="goTo('/geocode/match/all')">Matches</button>
           <button class="nav-btn" id="notificationBtn">
             Notifications <span class="badge bg-danger" id="notificationBadge" style="display:none;">0</span>
           </button>
@@ -395,7 +395,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <script>
-    // function goTo(p) { window.location.href = '/profile'; }
+    function goTo(p) { window.location.href = `${p}`; }
 
     document.getElementById("profileBtn").onclick = () => { window.location.href = '/profile'; };
 
@@ -421,7 +421,7 @@
       const buyBtn = document.getElementById("buyPremiumBtn");
       buyBtn.addEventListener("click", async () => {
         buyBtn.disabled = true;
-        buyBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Processing...`;
+        buyBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Processing.`;
 
         try {
           const res = await axios.get("http://localhost:3000/purchase/premiumMembership", {

@@ -1,5 +1,6 @@
 const User = require('../models/user')
 const axios = require('axios');
+const path = require('path')
 
 const autocomplete = async (req, res) => {
     try {
@@ -142,7 +143,7 @@ const matchAllUsers = async(req,res)=>{
 }
 
 const getAllMatchesPage = async(req,res)=>{
-    res.sendFile(path.join(__dirname, "../", "public", "views", "profile.html"));
+    res.sendFile(path.join(__dirname, "../", "public", "views", "allMatches.html"));
 }
 
 module.exports = {autocomplete,forwardGeocode,reverseGeocode,matchUser,matchAllUsers,getAllMatchesPage};

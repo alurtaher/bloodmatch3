@@ -1,5 +1,6 @@
 const Notification = require("../models/Notification");
 const User = require("../models/user");
+const path = require('path')
 
 // Create notification alert
 const createNotification = async (req, res) => {

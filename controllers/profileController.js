@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const path = require('path')
 
 const getProfile = (req, res, next) => {
   res.sendFile(path.join(__dirname, "../", "public", "views", "profile.html"));
