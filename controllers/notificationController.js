@@ -145,10 +145,8 @@ const deleteNotification = async (req, res) => {
     const { notificationId } = req.params;
     const userId = req.user.id;
 
-    const notification = await Notification.findOneAndUpdate(
+    const notification = await Notification.findOneAndDelete(
       { _id: notificationId, userId },
-      { isActive: false },
-      { new: true }
     );
 
     if (!notification) {

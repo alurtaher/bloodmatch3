@@ -16,6 +16,6 @@ router.post('/match',protect, matchUser);
 
 router.get('/match/all',getAllMatchesPage)
 
-router.post('/match/all',protect,matchAllUsers);
+router.get('/match/all/data',protect,matchAllUsers);
 
 module.exports = router;

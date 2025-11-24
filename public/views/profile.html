@@ -61,16 +61,8 @@
       gap: .3rem;
     }
 
-    .nav-btn:hover {
-      background: var(--light);
-      color: var(--red);
-    }
-
-    .nav-btn.active {
-      background: var(--red);
-      color: #fff;
-      font-weight: 600;
-    }
+    .nav-btn:hover { background: var(--light); color: var(--red); }
+    .nav-btn.active { background: var(--red); color: #fff; font-weight: 600; }
 
     .buy-premium-highlight {
       background: linear-gradient(145deg, var(--red), var(--blue));
@@ -83,10 +75,7 @@
       transition: transform .3s;
     }
 
-    .buy-premium-highlight:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 18px rgba(185, 28, 28, .4);
-    }
+    .buy-premium-highlight:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(185, 28, 28, .4); }
 
     .btn-logout {
       border: 1.5px solid var(--red);
@@ -98,10 +87,7 @@
       transition: all .3s;
     }
 
-    .btn-logout:hover {
-      background: var(--red);
-      color: #fff;
-    }
+    .btn-logout:hover { background: var(--red); color: #fff; }
 
     .card {
       border-radius: 16px;
@@ -156,20 +142,9 @@
       font-size: 0.9rem;
     }
 
-    .btn-edit {
-      background: var(--yellow);
-      color: var(--dark);
-    }
-
-    .btn-save {
-      background: var(--green);
-      color: #fff;
-    }
-
-    .btn-cancel {
-      background: #6b7280;
-      color: #fff;
-    }
+    .btn-edit { background: var(--yellow); color: var(--dark); }
+    .btn-save { background: var(--green); color: #fff; }
+    .btn-cancel { background: #6b7280; color: #fff; }
 
     .premium-badge {
       background: linear-gradient(135deg, var(--gold), #f59e0b);
@@ -188,6 +163,14 @@
       border-radius: 16px;
       margin-top: 1rem;
       box-shadow: 0 4px 12px rgba(0, 0, 0, .1);
+      cursor: crosshair !important;
+    }
+
+    .location-note {
+      font-size: 0.85rem;
+      color: #6b7280;
+      font-style: italic;
+      margin-top: 0.5rem;
     }
 
     .spinner {
@@ -201,9 +184,7 @@
       margin: 1rem auto;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     .role-badge {
       display: inline-block;
@@ -214,15 +195,8 @@
       text-transform: capitalize;
     }
 
-    .role-donor {
-      background: var(--green);
-      color: #fff;
-    }
-
-    .role-recipient {
-      background: var(--blue);
-      color: #fff;
-    }
+    .role-donor { background: var(--green); color: #fff; }
+    .role-recipient { background: var(--blue); color: #fff; }
   </style>
 </head>
 
@@ -231,12 +205,12 @@
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg">
     <div class="container">
-      <a class="navbar-brand" href="/">BloodMatch</a>
+      <a class="navbar-brand" href="/dashboard">🩸BloodMatch</a>
       <div class="ms-auto d-flex align-items-center gap-2 flex-wrap">
         <button class="nav-btn" onclick="goTo('/dashboard')">Home</button>
-        <button class="nav-btn" onclick="goTo('/matches')">Matches</button>
-        <button class="nav-btn"id="notificationBtn">Notifications</button>
-        <button class="nav-btn active" onclick="goTo('/profile')">Profile</button>
+        <button class="nav-btn" onclick="goTo('/geocode/match/all')">Matches</button>
+        <button class="nav-btn" id="notificationBtn">Notifications</button>
+        <button class="nav-btn active">Profile</button>
         <button class="buy-premium-highlight" id="buyPremiumBtn">Buy Premium</button>
         <button class="btn-logout" id="logoutBtn">Logout</button>
       </div>
@@ -251,7 +225,7 @@
       <div>
         <span id="roleBadge" class="role-badge role-donor">Donor</span>
         <span id="premiumTag" class="premium-badge" style="display:none;">
-          <i class="fas fa-crown"></i> Premium
+          Premium
         </span>
       </div>
     </div>
@@ -270,24 +244,28 @@
               <input type="text" class="form-control" id="inputName" disabled />
             </div>
             <div class="col-md-6">
-              <label class="form-label">Phone</label>
-              <input type="text" class="form-control" id="inputPhone" disabled />
+              <label class="form-label">Phone Number</label>
+              <input type="text" class="form-control" id="inputPhone" placeholder="10-digit number" disabled />
             </div>
             <div class="col-md-6">
               <label class="form-label">Email</label>
-              <input type="email" class="form-control" id="inputEmail" disabled readonly/>
+              <input type="email" class="form-control" id="inputEmail" disabled readonly />
             </div>
             <div class="col-md-6">
               <label class="form-label">Blood Group</label>
               <select class="form-select" id="inputBlood" disabled>
-                <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
-                <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+                <option value="">Select</option>
+                <option>A+</option><option>A-</option>
+                <option>B+</option><option>B-</option>
+                <option>AB+</option><option>AB-</option>
+                <option>O+</option><option>O-</option>
               </select>
             </div>
             <div class="col-12">
-              <label class="form-label">Location</label>
-              <div id="locationText" class="text-muted mb-2"></div>
+              <label class="form-label">Your Location</label>
+              <div id="locationText" class="text-muted mb-2">Click map to update location</div>
               <div id="map"></div>
+              <div class="location-note">Click on the map to set your exact location</div>
             </div>
           </div>
 
@@ -318,77 +296,90 @@
         return;
       }
 
-      const buyBtn = document.getElementById("buyPremiumBtn");
-      const premiumTag = document.getElementById("premiumTag");
-      let originalData = {};
-      let map;
+      let user = {};
+      let map, marker;
+      let isEditing = false;
 
       const userIcon = L.icon({
-        iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
+        iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
         shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
         iconSize: [25, 41],
         iconAnchor: [12, 41]
       });
 
-      function initMap(lat, lng) {
-        map = L.map("map").setView([lat, lng], 12);
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-          attribution: "© OpenStreetMap"
-        }).addTo(map);
-        L.marker([lat, lng], { icon: userIcon }).addTo(map).bindPopup("<b>Your Location</b>").openPopup();
-      }
-      let u;
+      function initMap(lat = 20.5937, lng = 78.9629) {
+        map = L.map("map").setView([lat, lng], 5);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
 
-      document.getElementById("notificationBtn")
-        .addEventListener("click",()=>{
-            if (u.isPremiumUser){
-              window.location.href = '/reminders/getNotificationPage'
-            }else{
-              alert("u must be a premium member")
-            }
-        })
+        if (lat !== 20.5937 || lng !== 78.9629) {
+          marker = L.marker([lat, lng], { icon: userIcon, draggable: true }).addTo(map)
+            .bindPopup("<b>Your Location</b>").openPopup();
+
+          marker.on('dragend', () => {
+            const pos = marker.getLatLng();
+            updateLocationText(pos.lat, pos.lng);
+          });
+        }
+
+        map.on('click', (e) => {
+          if (!isEditing) return;
+          const { lat, lng } = e.latlng;
+          if (marker) map.removeLayer(marker);
+          marker = L.marker([lat, lng], { icon: userIcon, draggable: true }).addTo(map)
+            .bindPopup("Your Location").openPopup();
+
+          marker.on('dragend', () => {
+            const pos = marker.getLatLng();
+            updateLocationText(pos.lat, pos.lng);
+          });
+
+          updateLocationText(lat, lng);
+        });
+      }
+
+      function updateLocationText(lat, lng) {
+        document.getElementById("locationText").innerHTML = `
+          <strong>Selected:</strong> Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}
+        `;
+        user.location = { type: "Point", coordinates: [lng, lat] };
+      }
 
       async function loadProfile() {
         try {
           const res = await axios.get("http://localhost:3000/profile/data", {
             headers: { Authorization: `Bearer ${token}` }
           });
-          u = res.data;
+          user = res.data;
 
-          document.getElementById("profileName").textContent = u.name || "User";
-          document.getElementById("profileEmail").textContent = u.email || "No email";
-          document.getElementById("avatarInitials").textContent = (u.name?.[0] || "U").toUpperCase();
+          document.getElementById("profileName").textContent = user.name || "User";
+          document.getElementById("profileEmail").textContent = user.email;
+          document.getElementById("avatarInitials").textContent = (user.name?.[0] || "U").toUpperCase();
 
-          document.getElementById("inputName").value = u.name || "";
-          document.getElementById("inputPhone").value = u.phonenumber || "";
-          document.getElementById("inputEmail").value = u.email || "";
-          document.getElementById("inputBlood").value = u.bloodGroup || "";
+          document.getElementById("inputName").value = user.name || "";
+          document.getElementById("inputPhone").value = user.phonenumber || "";
+          document.getElementById("inputEmail").value = user.email;
+          document.getElementById("inputBlood").value = user.bloodGroup || "";
 
-          const role = (u.role || "donor").toLowerCase();
           const roleBadge = document.getElementById("roleBadge");
+          const role = (user.role || "donor").toLowerCase();
           roleBadge.textContent = role;
           roleBadge.className = `role-badge role-${role}`;
 
-          // Premium logic
-          if (u.isPremiumUser) {
+          // Premium
+          const buyBtn = document.getElementById("buyPremiumBtn");
+          const premiumTag = document.getElementById("premiumTag");
+          if (user.isPremiumUser) {
             premiumTag.style.display = "inline-flex";
-            buyBtn.disabled = true;
-            buyBtn.innerHTML = `<i class="fas fa-crown me-1"></i> Premium Member`;
+            buyBtn.innerHTML = `Premium Member`;
             buyBtn.style.background = "linear-gradient(145deg, var(--gold), #f59e0b)";
             buyBtn.style.color = "#1f2937";
-          } else {
-            premiumTag.style.display = "none";
-            buyBtn.disabled = false;
-            buyBtn.innerHTML = "Buy Premium";
-            buyBtn.style.background = "linear-gradient(145deg, var(--red), var(--blue))";
-            buyBtn.style.color = "#fff";
+            buyBtn.disabled = true;
           }
 
-          const [lng, lat] = u.location?.coordinates || [0, 0];
-          document.getElementById("locationText").textContent = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
+          // Location
+          const [lng, lat] = user.location?.coordinates || [78.9629, 20.5937];
+          updateLocationText(lat, lng);
           initMap(lat, lng);
-
-          originalData = { ...u };
 
         } catch (e) {
           if (e.response?.status === 401) {
@@ -398,74 +389,64 @@
         }
       }
 
+      // Edit Mode
       document.getElementById("editBtn").onclick = () => {
-        document.querySelectorAll("#profileForm input, #profileForm select").forEach(el => el.disabled = false);
+        isEditing = true;
+        document.querySelectorAll("#profileForm input:not(#inputEmail), #profileForm select").forEach(el => el.disabled = false);
         document.getElementById("editBtn").style.display = "none";
         document.getElementById("actionButtons").style.display = "flex";
+        document.querySelector(".location-note").textContent = "Click on the map to update your location";
       };
 
+      // Cancel
       document.getElementById("cancelBtn").onclick = () => {
-        document.getElementById("inputName").value = originalData.name;
-        document.getElementById("inputPhone").value = originalData.phonenumber;
-        // document.getElementById("inputEmail").value = originalData.email;
-        document.getElementById("inputBlood").value = originalData.bloodGroup;
+        isEditing = false;
+        loadProfile(); // Reload original data
         document.querySelectorAll("#profileForm input, #profileForm select").forEach(el => el.disabled = true);
         document.getElementById("editBtn").style.display = "block";
         document.getElementById("actionButtons").style.display = "none";
       };
 
+      // Save Changes
       document.getElementById("profileForm").onsubmit = async (e) => {
         e.preventDefault();
         const spinner = document.getElementById("saveSpinner");
         spinner.style.display = "block";
+
         try {
-          const updated = {
+          const updates = {
             name: document.getElementById("inputName").value.trim(),
             phonenumber: document.getElementById("inputPhone").value.trim(),
-            bloodGroup: document.getElementById("inputBlood").value
+            bloodGroup: document.getElementById("inputBlood").value,
+            location: user.location || null
           };
-          await axios.put("http://localhost:3000/profile/update", updated, {
+
+          await axios.put("http://localhost:3000/profile/update", updates, {
             headers: { Authorization: `Bearer ${token}` }
           });
+
           alert("Profile updated successfully!");
           window.location.reload();
         } catch (err) {
-          alert(err.response?.data?.message || "Update failed.");
+          alert(err.response?.data?.message || "Update failed. Check your inputs.");
         } finally {
           spinner.style.display = "none";
         }
       };
 
+      // Notification Button
+      document.getElementById("notificationBtn").onclick = () => {
+        if (user.isPremiumUser) {
+          window.location.href = '/reminders/getNotificationPage';
+        } else {
+          alert("This feature is only for Premium Members!");
+        }
+      };
+
+      // Logout
       document.getElementById("logoutBtn").onclick = () => {
         localStorage.removeItem("token");
         window.location.href = "/login";
-      };
-
-      buyBtn.onclick = async () => {
-        buyBtn.disabled = true;
-        buyBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Processing...`;
-        try {
-          const res = await axios.get("http://localhost:3000/purchase/premiumMembership", {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          const { paymentSessionId, orderId } = res.data;
-          const cashfree = Cashfree({ mode: "sandbox" });
-          const result = await cashfree.checkout({ paymentSessionId, redirectTarget: "_modal" });
-          if (result.paymentDetails) {
-            await axios.post(`http://localhost:3000/purchase/updateTransactionStatus/${orderId}`, {}, {
-              headers: { Authorization: `Bearer ${token}` }
-            });
-            alert("Payment successful! Welcome to Premium!");
-            window.location.reload();
-          } else {
-            alert("Payment cancelled.");
-          }
-        } catch (err) {
-          alert(err.response?.data?.message || "Payment failed.");
-        } finally {
-          buyBtn.disabled = false;
-          buyBtn.innerHTML = "Buy Premium";
-        }
       };
 
       loadProfile();

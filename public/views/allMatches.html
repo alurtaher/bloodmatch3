@@ -1,504 +1,240 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BloodMatch - Search Matches</title>
-
-  <!-- Bootstrap 5 -->
+  <title>BloodMatch - All Matches</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <style>
-    :root {
-      --red: #b91c1c;
-      --blue: #1e40af;
-      --light: #fef2f2;
-      --dark: #0f172a;
-      --gold: #fbbf24;
-      --premium-glow: #fef3c7;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--light);
-      color: var(--dark);
-    }
-
-    .navbar {
-      background: #fff;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
-      padding: .8rem 0;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-
-    .navbar-brand {
-      font-weight: 700;
-      color: var(--red);
-      font-size: 1.5rem;
-    }
-
-    .nav-btn {
-      background: none;
-      border: none;
-      color: var(--dark) !important;
-      font-weight: 500;
-      font-size: .9rem;
-      padding: .5rem 1rem;
-      border-radius: 50px;
-      transition: all .3s;
-      display: flex;
-      align-items: center;
-      gap: .3rem;
-    }
-
-    .nav-btn:hover {
-      background: var(--light);
-      color: var(--red) !important;
-    }
-
-    .nav-btn.active {
-      background: var(--red);
-      color: #fff !important;
-      font-weight: 600;
-    }
-
-    .btn-logout {
-      border: 1.5px solid var(--red);
-      color: var(--red);
-      border-radius: 50px;
-      padding: .3rem 1rem;
-      font-weight: 700;
-      font-size: .9rem;
-      transition: all .3s;
-    }
-
-    .btn-logout:hover {
-      background: var(--red);
-      color: #fff;
-    }
-
-    .card {
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, .1);
-      margin-bottom: 2rem;
-    }
-
-    .card-header {
-      background: var(--red);
-      color: #fff;
-      font-weight: 700;
-      font-size: 1.1rem;
-    }
-
-    .table thead {
-      background: var(--red);
-      color: #fff;
-      text-align: center;
-    }
-
-    .table tbody td {
-      vertical-align: middle;
-      text-align: center;
-    }
-
-    .filters-row {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      margin-bottom: 1.5rem;
-    }
-
-    .filters-row>div {
-      flex-grow: 1;
-      min-width: 150px;
-    }
-
-    #paginationControls {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-
-    /* PREMIUM BUTTON */
-    .buy-premium-highlight {
-      background: linear-gradient(145deg, var(--red), var(--blue));
-      color: #fff;
-      border: none;
-      border-radius: 50px;
-      padding: .5rem 1.2rem;
-      font-weight: 700;
-      font-size: .85rem;
-      transition: transform .3s;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-
-    .buy-premium-highlight:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 18px rgba(185, 28, 28, .4);
-    }
-
-    .buy-premium-highlight:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-      background: linear-gradient(145deg, var(--gold), #f59e0b);
-      color: #1f2937;
-    }
-
-    .premium-badge {
-      background: linear-gradient(135deg, var(--gold), #f59e0b);
-      color: #1f2937;
-      font-weight: 700;
-      font-size: 0.7rem;
-      padding: 0.2rem 0.5rem;
-      border-radius: 50px;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      margin-left: 0.5rem;
-    }
+    :root { --red: #b91c1c; --yellow: #f59e0b; --light: #fef2f2; --dark: #0f172a; --gold: #fbbf24; }
+    body { font-family: 'Inter', sans-serif; background: var(--light); color: var(--dark); }
+    .navbar { background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.05); padding: .8rem 0; position: sticky; top: 0; z-index: 1000; }
+    .navbar-brand { font-weight: 700; color: var(--red); font-size: 1.5rem; }
+    .nav-btn { background: none; border: none; color: var(--dark); font-weight: 500; font-size: .9rem; padding: .5rem 1rem; border-radius: 50px; transition: all .3s; }
+    .nav-btn:hover { background: #fee2e2; color: var(--red); }
+    .nav-btn.active { background: var(--red); color: #fff; font-weight: 600; }
+    .btn-logout { border: 1.5px solid var(--red); color: var(--red); border-radius: 50px; padding: .3rem 1rem; font-weight: 700; font-size: .9rem; }
+    .btn-logout:hover { background: var(--red); color: #fff; }
+    .card { border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,.1); margin-bottom: 2rem; }
+    .card-header { background: var(--red); color: #fff; font-weight: 700; }
+    .table thead { background: var(--red); color: #fff; }
+    .distance-badge { background: var(--yellow); color: #1f2937; font-weight: 600; padding: 0.25rem 0.6rem; border-radius: 50px; font-size: 0.8rem; }
+    .premium-badge { background: linear-gradient(135deg, var(--gold), #f59e0b); color: #1f2937; font-weight: 700; font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 50px; display: inline-flex; align-items: center; gap: 0.3rem; }
+    .buy-premium-highlight { background: linear-gradient(145deg, var(--red), #1e40af); color: #fff; border: none; border-radius: 50px; padding: .5rem 1.2rem; font-weight: 700; font-size: .85rem; }
+    .buy-premium-highlight:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(185,28,28,.4); }
+    .buy-premium-highlight:disabled { background: linear-gradient(145deg, var(--gold), #f59e0b); color: #1f2937; }
+    #paginationControls { display: flex; justify-content: center; gap: 1rem; margin: 2rem 0; }
   </style>
 </head>
-
 <body>
 
-  <!-- Navbar -->
   <nav class="navbar navbar-expand-lg">
     <div class="container">
-      <a class="navbar-brand" href="/">BloodMatch</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <div class="ms-auto d-flex align-items-center gap-2 flex-wrap">
-          <button class="nav-btn" onclick="goTo('/')">Home</button>
-          <button class="nav-btn active" onclick="goTo('/matches')">Matches</button>
-          <button class="nav-btn" id="notificationBtn">Notifications</button>
-          <button class="nav-btn" id="profileBtn">Profile</button>
-          <button id="buyPremiumBtn" class="buy-premium-highlight" style="display:none;">Buy Premium</button>
-          <button class="btn-logout" id="logoutBtn">Logout</button>
-        </div>
+      <a class="navbar-brand" href="/dashboard">🩸BloodMatch</a>
+      <div class="ms-auto d-flex align-items-center gap-2 flex-wrap">
+        <button class="nav-btn" onclick="goTo('/dashboard')">Home</button>
+        <button class="nav-btn active">All Matches</button>
+        <button class="nav-btn" id="notificationBtn">Notifications</button>
+        <button class="nav-btn" onclick="goTo('/profile')">Profile</button>
+        <button class="buy-premium-highlight" id="buyPremiumBtn">Buy Premium</button>
+        <button class="btn-logout" id="logoutBtn">Logout</button>
       </div>
     </div>
   </nav>
 
   <div class="container my-4">
     <h2 class="mb-4 d-flex align-items-center gap-2">
-      Search Matches
-      <span id="premiumTag" class="premium-badge" style="display:none;">
-        <i class="fas fa-crown"></i> Premium
-      </span>
+      All Available Matches Worldwide
+      <span id="premiumTag" class="premium-badge" style="display:none;">Premium</span>
     </h2>
 
-    <!-- Filters: Role, Blood Group, Page Size + Search Button -->
-    <div class="filters-row" id="filtersContainer">
-      <div>
-        <label for="roleInput" class="form-label fw-semibold">Match Type</label>
-        <select class="form-select" id="roleInput" required>
-          <option value="" selected>Choose Required Type</option>
-          <option value="donor">Required Donors</option>
-          <option value="recipient">Required Recipients</option>
-        </select>
-      </div>
-      <div>
-        <label for="bloodGroupInput" class="form-label fw-semibold">Blood Group</label>
-        <select class="form-select" id="bloodGroupInput" required>
-          <option value="" selected>Choose Blood Group</option>
-          <option value="A+">A+</option>
-          <option value="A-">A-</option>
-          <option value="B+">B+</option>
-          <option value="B-">B-</option>
-          <option value="AB+">AB+</option>
-          <option value="AB-">AB-</option>
-          <option value="O+">O+</option>
-          <option value="O-">O-</option>
-        </select>
-      </div>
-      <div>
-        <label for="pageSizeInput" class="form-label fw-semibold">Results per page</label>
-        <select class="form-select" id="pageSizeInput" required>
-          <option value="2">2</option>
-          <option value="5">5</option>
-          <option value="10" selected>10</option>
-          <option value="25">25</option>
-        </select>
-      </div>
-      <div class="d-flex align-items-end">
-        <button class="btn btn-danger w-100" id="searchBtn" disabled>Search</button>
+    <!-- Filters: Only Blood Group + Per Page -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="row g-3 align-items-end">
+          <div class="col-md-5">
+            <label class="form-label fw-semibold">Blood Group (Optional)</label>
+            <select class="form-select" id="bloodGroupFilter">
+              <option value="">All Blood Groups</option>
+              <option>A+</option><option>A-</option>
+              <option>B+</option><option>B-</option>
+              <option>AB+</option><option>AB-</option>
+              <option>O+</option><option>O-</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Results Per Page</label>
+            <select class="form-select" id="limitFilter">
+              <option>2</option>
+              <option selected>5</option>
+              <option>10</option>
+              <option>20</option>
+              <option>50</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <button class="btn btn-danger w-100" id="searchBtn">Search</button>
+          </div>
+        </div>
+        <div class="mt-3 text-muted small">
+          Showing <strong>all users worldwide</strong> 
+        </div>
       </div>
     </div>
 
+    <!-- Results -->
     <div class="card" id="resultsCard" style="display:none;">
-      <div class="card-header">Matched Users</div>
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span id="resultTitle">Loading...</span>
+        <small id="resultCount" class="text-light opacity-75"></small>
+      </div>
       <div class="card-body p-0">
         <table class="table table-hover mb-0">
           <thead>
             <tr>
               <th>Name</th>
               <th>Blood Group</th>
-              <th>Email</th>
+              <th>Location</th>
+              <th>Distance</th>
               <th>Phone</th>
               <th>Action</th>
             </tr>
           </thead>
-          <tbody id="allMatchesTableBody">
-            <tr>
-              <td colspan="5" class="text-center py-4">Select filters and click Search.</td>
-            </tr>
-          </tbody>
+          <tbody id="matchesTableBody"></tbody>
         </table>
       </div>
-      <div id="paginationControls" class="p-3">
-        <button class="btn btn-outline-primary" id="prevPageBtn" disabled>Previous</button>
-        <span id="currentPageInfo">Page 1</span>
-        <button class="btn btn-outline-primary" id="nextPageBtn" disabled>Next</button>
+      <div id="paginationControls">
+        <button class="btn btn-outline-danger" id="prevBtn" disabled>Previous</button>
+        <span id="pageInfo" class="fw-semibold">Page 1</span>
+        <button class="btn btn-outline-danger" id="nextBtn" disabled>Next</button>
       </div>
     </div>
   </div>
 
-  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-  <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
 
   <script>
-    function goTo(path) {
-      window.location.href = path;
-    }
+    const token = localStorage.getItem("token");
+    let currentPage = 1;
+    let totalPages = 1;
+    let isPremium = false;
 
-    document.getElementById("profileBtn").onclick = () => goTo('/profile');
-    document.getElementById("notificationBtn").onclick = () => alert("Notifications feature coming soon!");
+    function goTo(path) { window.location.href = path; }
+
     document.getElementById("logoutBtn").onclick = () => {
       localStorage.removeItem("token");
       window.location.href = "/login";
     };
 
-    window.showPhone = (phone) => alert(`Contact: ${phone}`);
+    document.getElementById("notificationBtn").onclick = () => {
+      if (!isPremium) alert("Upgrade to Premium!");
+      else window.location.href = "/reminders/getNotificationPage";
+    };
 
-    let currentPage = 1;
-    let totalPages = 1;
-    let currentRole = '';
-    let currentBloodGroup = '';
-    let currentLimit = 10;
-    let isPremiumUser = false;
+    async function initApp() {
+      if (!token) return window.location.href = "/login";
 
-    async function checkPremiumUserAndInit() {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("Login required.");
-        window.location.href = "/login";
-        return;
-      }
       try {
-        const res = await axios.get("http://localhost:3000/profile/data", { headers: { Authorization: `Bearer ${token}` } });
-        const user = res.data;
-        isPremiumUser = user.isPremiumUser === true;
+        const res = await axios.get("http://localhost:3000/profile/data", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        isPremium = res.data.isPremiumUser === true;
+        document.getElementById("premiumTag").style.display = isPremium ? "inline-flex" : "none";
 
-        // Premium badge
-        const premiumTag = document.getElementById("premiumTag");
-        if (premiumTag) {
-          premiumTag.style.display = isPremiumUser ? "inline-flex" : "none";
-        }
-
-        // Premium button
         const buyBtn = document.getElementById("buyPremiumBtn");
-        const searchBtn = document.getElementById("searchBtn");
-        if (isPremiumUser) {
-          buyBtn.innerHTML = `<i class="fas fa-crown me-1"></i> Premium Member`;
-          // buyBtn.disabled = true;
-          buyBtn.style.background = "linear-gradient(145deg, var(--gold), #f59e0b)";
-          buyBtn.style.color = "#1f2937";
-          buyBtn.style.cursor = "not-allowed";
-
-          searchBtn.disabled = false;
+        if (isPremium) {
+          buyBtn.innerHTML = "Premium Member";
+          buyBtn.disabled = true;
         } else {
           buyBtn.innerHTML = "Buy Premium";
-          buyBtn.disabled = false;
-          buyBtn.style.background = "linear-gradient(145deg, var(--red), var(--blue))";
-          buyBtn.style.color = "#fff";
-          buyBtn.style.cursor = "pointer";
-
-          searchBtn.disabled = true;
-          searchBtn.title = "Upgrade to Premium to search matches";
+          buyBtn.onclick = () => alert("Payment coming soon!");
         }
 
-        buyBtn.style.display = "inline-flex";
-
-        // Buy button click handler
-        buyBtn.onclick = async () => {
-          if (isPremiumUser) return;
-          buyBtn.disabled = true;
-          buyBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Processing...`;
-
-          try {
-            const res = await axios.get("http://localhost:3000/purchase/premiumMembership", {
-              headers: { Authorization: `Bearer ${token}` }
-            });
-
-            if (res.data.isPremiumUser) {
-              alert(res.data.message || "You are already a premium member!");
-              buyBtn.innerHTML = `<i class="fas fa-crown me-1"></i> Premium Member`;
-              buyBtn.disabled = true;
-              buyBtn.style.background = "linear-gradient(145deg, var(--gold), #f59e0b)";
-              buyBtn.style.color = "#1f2937";
-              searchBtn.disabled = false;
-              isPremiumUser = true;
-              return;
-            }
-
-            const { paymentSessionId, orderId } = res.data;
-            const cashfree = Cashfree({ mode: "sandbox" }); // make sure Cashfree SDK is loaded
-            const result = await cashfree.checkout({ paymentSessionId, redirectTarget: "_modal" });
-
-            if (result.paymentDetails) {
-              await axios.post(`http://localhost:3000/purchase/updateTransactionStatus/${orderId}`, {}, { headers: { Authorization: `Bearer ${token}` } });
-              alert("Payment successful! Welcome to Premium!");
-              window.location.reload();
-            } else {
-              alert("Payment was cancelled.");
-            }
-          } catch (err) {
-            console.error(err);
-            alert(err.response?.data?.message || "Payment failed.");
-          } finally {
-            if (!isPremiumUser) {
-              buyBtn.disabled = false;
-              buyBtn.innerHTML = "Buy Premium";
-            }
-          }
-        };
-
+        searchMatches(); // Auto-load
       } catch (err) {
         if (err.response?.status === 401) {
           localStorage.removeItem("token");
           window.location.href = "/login";
-        } else {
-          alert("Failed to load user profile.");
         }
       }
     }
 
-    async function loadMatches(role, bloodGroup, limit, page = 1) {
-      if (!isPremiumUser) {
-        alert("Upgrade to Premium to perform searches.");
-        return;
-      }
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("Login required.");
-        window.location.href = "/login";
-        return;
-      }
+    async function searchMatches(page = 1) {
+      // if (!token || !isPremium) return alert("Premium membership required!");
 
       currentPage = page;
-      currentRole = role;
-      currentBloodGroup = bloodGroup;
-      currentLimit = limit;
+      const bloodGroup = document.getElementById("bloodGroupFilter").value || "";
+      const limit = document.getElementById("limitFilter").value;
 
-      const tbody = document.getElementById("allMatchesTableBody");
-      const resultsCard = document.getElementById("resultsCard");
-      resultsCard.style.display = "block";
-      tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4">Loading matches...</td></tr>`;
+      const params = new URLSearchParams({ page, limit });
+      if (bloodGroup) params.append("bloodGroup", bloodGroup);
+
+      document.getElementById("resultsCard").style.display = "block";
+      document.getElementById("matchesTableBody").innerHTML = `
+        <tr><td colspan="6" class="text-center py-5">
+          <div class="spinner-border text-danger"></div>
+        </td></tr>`;
 
       try {
-        const res = await axios.post(
-          "http://localhost:3000/geocode/match/all",
-          { role, bloodGroup, page, limit },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-
-        const matches = res.data.matches || [];
-        totalPages = res.data.totalPages || 1;
-
-        if (matches.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4">No matches found.</td></tr>`;
-          updatePaginationControls();
-          return;
-        }
-
-        tbody.innerHTML = "";
-
-        matches.forEach(m => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${m.name || "Unknown"}</td>
-            <td>${m.bloodGroup || "-"}</td>
-            <td>${m.email || "-"}</td>
-            <td>${m.phonenumber ? m.phonenumber : "-"}</td>
-            <td>${
-              m.phonenumber ? `<button class="btn btn-outline-danger btn-sm" onclick="showPhone('${m.phonenumber}')">Contact</button>` : "-"
-            }</td>
-          `;
-          tbody.appendChild(tr);
+        const res = await axios.get(`http://localhost:3000/geocode/match/all/data?${params}`, {
+          headers: { Authorization: `Bearer ${token}` }
         });
 
-        updatePaginationControls();
-      } catch (e) {
-        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-danger">Failed to load matches.</td></tr>`;
-        alert(e.response?.data?.error || "Failed to load matches.");
-        updatePaginationControls();
+        const d = res.data.data;
+        const matches = d.matches || [];
+        totalPages = d.pagination.totalPages || 1;
+
+        document.getElementById("resultTitle").textContent = 
+          `Found ${d.pagination.total} ${d.info.showing || "matches"}`;
+        document.getElementById("resultCount").textContent = `${matches.length} shown`;
+
+        if (matches.length === 0) {
+          document.getElementById("matchesTableBody").innerHTML = `
+            <tr><td colspan="6" class="text-center py-5 text-muted">
+              No users found with this blood group.
+            </td></tr>`;
+        } else {
+          document.getElementById("matchesTableBody").innerHTML = matches.map(m => `
+            <tr>
+              <td><strong>${m.name}</strong></td>
+              <td><span class="badge bg-danger">${m.bloodGroup}</span></td>
+              <td>
+                <div class="fw-semibold">${m.city.split(',')[0]}</div>
+                <small class="text-muted">${m.city.split(',').slice(1).join(', ')}</small>
+              </td>
+              <td><span class="distance-badge">${m.distance} km</span></td>
+              <td>${m.phonenumber || '—'}</td>
+              <td>
+                <button class="btn btn-sm btn-outline-danger" onclick="alert('Call: ${m.phonenumber || 'Not available'}')">
+                  Contact
+                </button>
+              </td>
+            </tr>
+          `).join("");
+        }
+
+        document.getElementById("pageInfo").textContent = `Page ${currentPage} of ${totalPages}`;
+        document.getElementById("prevBtn").disabled = currentPage <= 1;
+        document.getElementById("nextBtn").disabled = currentPage >= totalPages;
+
+      } catch (err) {
+        console.error(err);
+        document.getElementById("matchesTableBody").innerHTML = `
+          <tr><td colspan="6" class="text-center py-5 text-danger">
+            Failed to load matches.
+          </td></tr>`;
       }
     }
 
-    function updatePaginationControls() {
-      const prevBtn = document.getElementById("prevPageBtn");
-      const nextBtn = document.getElementById("nextPageBtn");
-      const pageInfo = document.getElementById("currentPageInfo");
+    document.getElementById("searchBtn").onclick = () => searchMatches(1);
+    document.getElementById("prevBtn").onclick = () => { if (currentPage > 1) searchMatches(currentPage - 1); };
+    document.getElementById("nextBtn").onclick = () => { if (currentPage < totalPages) searchMatches(currentPage + 1); };
 
-      prevBtn.disabled = currentPage <= 1;
-      nextBtn.disabled = currentPage >= totalPages;
-
-      pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-    }
-
-    document.getElementById("searchBtn").addEventListener("click", () => {
-      const role = document.getElementById("roleInput").value;
-      const bloodGroup = document.getElementById("bloodGroupInput").value;
-      const limit = parseInt(document.getElementById("pageSizeInput").value, 10);
-
-      if (!role) {
-        alert("Please select the required type (Donor or Recipient).");
-        return;
-      }
-
-      if (!bloodGroup) {
-        alert("Please select a blood group.");
-        return;
-      }
-
-      loadMatches(role, bloodGroup, limit, 1);
-    });
-
-    document.getElementById("prevPageBtn").addEventListener("click", () => {
-      if (currentPage > 1) {
-        loadMatches(currentRole, currentBloodGroup, currentLimit, currentPage - 1);
-      }
-    });
-
-    document.getElementById("nextPageBtn").addEventListener("click", () => {
-      if (currentPage < totalPages) {
-        loadMatches(currentRole, currentBloodGroup, currentLimit, currentPage + 1);
-      }
-    });
-
-    document.addEventListener("DOMContentLoaded", checkPremiumUserAndInit);
+    document.addEventListener("DOMContentLoaded", initApp);
   </script>
-
 </body>
-
 </html>
